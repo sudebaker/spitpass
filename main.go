@@ -1,18 +1,16 @@
 package main
 
 import (
-    "fmt"
-    "spitpass/stuff"
+	"fmt"
+	"spitpass/stuff"
 )
 func main() {
 
-    wordlist := stuff.GetWords("./texto.txt",8)
+    wordlist := stuff.GetWords("./texto.txt",10)
 
     for _,word := range(wordlist){
         password:=stuff.NewPassword()
         password.Password = word
-        password.ClearString()
-        password.ConvertEleet()
-        fmt.Println(password)
+        fmt.Println(password.Password)
     }
 }

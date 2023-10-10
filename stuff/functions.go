@@ -2,6 +2,7 @@ package stuff
 
 import (
 	"bufio"
+	"fmt"
 	"log"
 	"math/rand"
 	"os"
@@ -14,6 +15,8 @@ const special_chars = "!@#$%&?,;.:-_<>"
 
 var nonAlphanumericRegex = regexp.MustCompile(`[^\p{L}\p{N} ]+`)
 
+//var nonAlphanumericRegex = regexp.MustCompile("[^a-zA-Z0-9]+")
+
 type pass_struct struct {
 	Password       string
 	Length         int
@@ -22,25 +25,20 @@ type pass_struct struct {
 	Suffix         bool
 	Suffix_lenght  int
 	Eleet          bool
-	Capitalize     bool
+	CapFirst       bool
+	CapLast        bool
 }
 
-func (p *pass_struct) ClearString() {
-	//Remove any non alphanumeric
-	nonAlphanumericRegex.ReplaceAllString(p.Password, "")
-}
-
-func (p *pass_struct) CapitalizePass(lastletter bool) {
+func (p *pass_struct) CapitalizePass() {
 	//capitalize by default first letter except lastletter = True
 	// Convert the string to lowercase
-	p.Password = strings.ToLower(p.Password)
 
 	// Check the provided option and capitalize the corresponding letter
-	if lastletter {
+	if p.CapFirst {
 		if len(p.Password) > 0 {
 			p.Password = strings.ToUpper(string(p.Password[0])) + p.Password[1:]
 		}
-	} else {
+	} else if p.CapLast {
 		if len(p.Password) > 0 {
 			p.Password = p.Password[:len(p.Password)-1] + strings.ToUpper(string(p.Password[len(p.Password)-1]))
 		}
@@ -59,19 +57,20 @@ func (p *pass_struct) SuffixPass(lenght int) {
 
 func (p *pass_struct) ConvertEleet() {
 	//convert string password to eleet language
-	p.Password = ConvertToLeet(p.Password)
+	fmt.Println("Convert to leet function", p)
 }
 
 func NewPassword() pass_struct {
 	password := pass_struct{
-		Password: "",
+		Password:       "",
 		Length:         10,
 		Preffix:        false,
 		Preffix_lenght: 0,
 		Suffix:         false,
 		Suffix_lenght:  0,
 		Eleet:          false,
-		Capitalize:     false,
+		CapFirst:       false,
+		CapLast:        false,
 	}
 	return password
 }
@@ -116,6 +115,8 @@ func GetWords(filepath string, wordlenght int) []string {
 		for _, word := range words {
 			// Check if the word length is greater than x
 			if len(word) > wordlenght {
+				word = strings.ToLower(word)
+				word = nonAlphanumericRegex.ReplaceAllString(word, "")
 				wordlist = append(wordlist, word)
 			}
 		}
