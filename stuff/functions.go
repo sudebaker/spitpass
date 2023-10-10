@@ -11,9 +11,25 @@ import (
 	"time"
 )
 
-const special_chars = "!@#$%&?,;.:-_<>"
-
-var nonAlphanumericRegex = regexp.MustCompile(`[^\p{L}\p{N} ]+`)
+var (
+	conso = [...]rune{
+		'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'r', 's', 't', 'v', 'w', 'x', 'y', 'z'}
+	vowels        = [...]rune{'a', 'e', 'i', 'o', 'u'}
+	special_chars = "!@#$%&?,;.:-_<>"
+	alphabet      = map[rune]rune{
+		'a': '4',
+		'b': '8',
+		'e': '€',
+		'g': '6',
+		'h': '#',
+		'l': '1',
+		'o': '0',
+		's': '5',
+		't': '7',
+		'z': '2',
+	}
+	nonAlphanumericRegex = regexp.MustCompile(`[^\p{L}\p{N} ]+`)
+)
 
 //var nonAlphanumericRegex = regexp.MustCompile("[^a-zA-Z0-9]+")
 
@@ -58,16 +74,31 @@ func (p *pass_struct) SuffixPass(lenght int) {
 func (p *pass_struct) ConvertEleet() {
 	//convert string password to eleet language
 	fmt.Println("Convert to leet function", p)
+
+}
+
+func (p *pass_struct) GenerateRandomPass() {
+	//totally human readable random pass with preffix/suffix
+	tsize := int(p.Length / 2)
+	tpass := ""
+	index := 0
+	for item := 0; item <= tsize; item++ {
+		index = rand.Intn(len(conso))
+		tpass = tpass + string(conso[index])
+		index = rand.Intn((len(vowels)))
+		tpass = tpass + string(vowels[index])
+	}
+	p.Password = tpass
 }
 
 func NewPassword() pass_struct {
 	password := pass_struct{
 		Password:       "",
-		Length:         10,
+		Length:         8,
 		Preffix:        false,
-		Preffix_lenght: 0,
+		Preffix_lenght: 2,
 		Suffix:         false,
-		Suffix_lenght:  0,
+		Suffix_lenght:  2,
 		Eleet:          false,
 		CapFirst:       false,
 		CapLast:        false,
