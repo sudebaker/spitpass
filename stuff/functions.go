@@ -1,12 +1,9 @@
 package stuff
 
 import (
-	"bufio"
-	"fmt"
-	"log"
+
 	"math/rand"
-	"os"
-	"regexp"
+	//"regexp"
 	"strings"
 	"time"
 )
@@ -28,13 +25,14 @@ var (
 		't': '7',
 		'z': '2',
 	}
-	nonAlphanumericRegex = regexp.MustCompile(`[^\p{L}\p{N} ]+`)
+	//nonAlphanumericRegex = regexp.MustCompile(`[^\p{L}\p{N} ]+`)
 )
 
 //var nonAlphanumericRegex = regexp.MustCompile("[^a-zA-Z0-9]+")
 
 type pass_struct struct {
 	Password       string
+	File           string
 	Length         int
 	Preffix        bool
 	Preffix_lenght int
@@ -72,13 +70,20 @@ func (p *pass_struct) SuffixPass(lenght int) {
 }
 
 func (p *pass_struct) ConvertEleet() {
-	//convert string password to eleet language
-	fmt.Println("Convert to leet function", p)
-
+	//convert string password to semi eleet language
+	var ptemp string
+	for _, char := range p.Password {
+		if replacement, ok := alphabet[char]; ok {
+			ptemp += string(replacement)
+		} else {
+			ptemp += string(char)
+		}
+	}
+	p.Password = ptemp
 }
 
 func (p *pass_struct) GenerateRandomPass() {
-	//totally human readable random pass with preffix/suffix
+	//totally human readable random pass
 	tsize := int(p.Length / 2)
 	tpass := ""
 	index := 0
@@ -89,6 +94,24 @@ func (p *pass_struct) GenerateRandomPass() {
 		tpass = tpass + string(vowels[index])
 	}
 	p.Password = tpass
+}
+
+func (p *pass_struct) GeneratePassword() {
+	//generate password from file or random one and modify it according to args
+	p.GenerateRandomPass()
+
+	if p.CapFirst || p.CapLast {
+		p.CapitalizePass()
+	}
+	if p.Preffix {
+		p.PreffixPass(p.Preffix_lenght)
+	}
+	if p.Suffix {
+		p.SuffixPass(p.Suffix_lenght)
+	}
+	if p.Eleet {
+		p.ConvertEleet()
+	}
 }
 
 func NewPassword() pass_struct {
@@ -125,37 +148,51 @@ func chooseRandomChar(s string, n int) string {
 	return string(randomChars)
 }
 
-func GetWords(filepath string, wordlenght int) []string {
-	wordlist := []string{}
-	// Open the file
-	file, err := os.Open(filepath)
-	if err != nil {
-		log.Fatalf("Failed to open the file: %v\n", err)
-	}
-	defer file.Close()
+// func (p *pass_struct) GenerateFromFile() {
+// 	wordlist := []string{}
+// 	// Open the file
+// 	file, err := os.Open(p.File)
+// 	if err != nil {
+// 		log.Fatalf("Failed to open the file: %v\n", err)
+// 	}
+// 	defer file.Close()
 
-	// Create a scanner to read the file line by line
-	scanner := bufio.NewScanner(file)
+// 	// Create a scanner to read the file line by line
+// 	scanner := bufio.NewScanner(file)
 
-	// Iterate over each line
-	for scanner.Scan() {
-		// Split the line into words
-		words := strings.Fields(scanner.Text())
+// 	// Iterate over each line
+// 	for scanner.Scan() {
+// 		// Split the line into words
+// 		words := strings.Fields(scanner.Text())
 
-		// Iterate over each word
-		for _, word := range words {
-			// Check if the word length is greater than x
-			if len(word) > wordlenght {
-				word = strings.ToLower(word)
-				word = nonAlphanumericRegex.ReplaceAllString(word, "")
-				wordlist = append(wordlist, word)
-			}
-		}
-	}
+// 		// Iterate over each word
+// 		for _, word := range words {
+// 			// Check if the word length is greater than x
+// 			if len(word) > p.Length {
+// 				word = strings.ToLower(word)
+// 				word = nonAlphanumericRegex.ReplaceAllString(word, "")
 
-	// Check for any errors during scanning
-	if err := scanner.Err(); err != nil {
-		log.Fatalf("Failed to scan the file: %v\n", err)
-	}
-	return wordlist
-}
+// 				wordlist = append(wordlist, word)
+// 			}
+
+// 			if p.CapFirst || p.CapLast {
+// 				p.CapitalizePass()
+// 			}
+// 			if p.Preffix {
+// 				p.PreffixPass(p.Preffix_lenght)
+// 			}
+// 			if p.Suffix {
+// 				p.SuffixPass(p.Suffix_lenght)
+// 			}
+// 			if p.Eleet {
+// 				p.ConvertEleet()
+// 			}
+// 		}
+// 	}
+
+	// // Check for any errors during scanning
+	// if err := scanner.Err(); err != nil {
+	// 	log.Fatalf("Failed to scan the file: %v\n", err)
+	// }
+	//return wordlist
+

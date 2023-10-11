@@ -26,11 +26,10 @@ func main() {
 	// pass.CapFirst = true
 	// pass.CapitalizePass()
 	// fmt.Println(pass.Password)
-	var fromfile *string
 
 	app := &cli.App{
 		Name:     "SpitPass",
-		Version:  "0.1",
+		Version:  "1.0",
 		Compiled: time.Now(),
 		Authors: []*cli.Author{
 			&cli.Author{
@@ -40,70 +39,59 @@ func main() {
 		},
 		Flags: []cli.Flag{
 			&cli.BoolFlag{
-				Name: "suffix",
-				Value: false,
-				Aliases: []string{"u"},
-				Usage: "Add some random special character at the end of password",
+				Name:        "suffix",
+				Value:       false,
+				Aliases:     []string{"u"},
+				Usage:       "Add some random special character at the end of password",
 				Destination: &pass.Suffix,
 			},
 			&cli.BoolFlag{
-				Name: "preffix",
-				Value: false,
-				Aliases: []string{"p"},
-				Usage: "Add some random special character at the beginning of password",
+				Name:        "preffix",
+				Value:       false,
+				Aliases:     []string{"p"},
+				Usage:       "Add some random special character at the beginning of password",
 				Destination: &pass.Preffix,
 			},
 			&cli.BoolFlag{
-				Name: "eleet",
-				Value: false,
-				Aliases: []string{"e"},
-				Usage: "Convert password to a semi eleet language",
+				Name:        "eleet",
+				Value:       false,
+				Aliases:     []string{"e"},
+				Usage:       "Convert password to a semi eleet language",
 				Destination: &pass.Eleet,
 			},
 			&cli.BoolFlag{
-				Name: "capfirst",
-				Value: false,
-				Aliases: []string{"c"},
-				Usage: "Capitalize the first letter of password",
+				Name:        "capfirst",
+				Value:       false,
+				Aliases:     []string{"c"},
+				Usage:       "Capitalize the first letter of password",
 				Destination: &pass.CapFirst,
 			},
 			&cli.BoolFlag{
-				Name: "caplast",
-				Value: false,
-				Aliases: []string{"l"},
-				Usage: "Capitalize the last letter of password",
+				Name:        "caplast",
+				Value:       false,
+				Aliases:     []string{"l"},
+				Usage:       "Capitalize the last letter of password",
 				Destination: &pass.CapLast,
 			},
-			&cli.StringFlag{
-				Name: "text",
-				Aliases: []string{"t"},
-				Usage: "Read words from `FILE`",
-				Destination: fromfile,
-			},
+			// &cli.StringFlag{
+			// 	Name:        "text",
+			// 	Aliases:     []string{"t"},
+			// 	Usage:       "Read words from `FILE`",
+			// 	Destination: &pass.File,
+			// },
 			&cli.IntFlag{
-				Name: "lenght",
-				Aliases: []string{"s"},
-				Usage: "Lenght of password",
-				Value: 8,
+				Name:        "lenght",
+				Aliases:     []string{"s"},
+				Usage:       "Lenght of password",
+				Value:       8,
 				Destination: &pass.Length,
 			},
 		},
 		Usage: "SpitPass",
 		Action: func(*cli.Context) error {
-			
-			pass.GenerateRandomPass()
-			if pass.CapFirst || pass.CapLast {
-				pass.CapitalizePass()
-			}
-			if pass.Preffix {
-				pass.PreffixPass(pass.Preffix_lenght)
-			}
-			if pass.Suffix {
-				pass.SuffixPass(pass.Suffix_lenght)
-			}
-			if pass.Eleet {
-				pass.ConvertEleet()
-			}
+
+			//TODO: control possible errors from calling GeneratePassord
+			pass.GeneratePassword()
 			fmt.Println(pass.Password)
 			return nil
 		},
