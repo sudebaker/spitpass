@@ -1,7 +1,6 @@
 package stuff
 
 import (
-
 	"math/rand"
 	//"regexp"
 	"strings"
@@ -51,7 +50,8 @@ func (p *pass_struct) CapitalizePass() {
 		if len(p.Password) > 0 {
 			p.Password = strings.ToUpper(string(p.Password[0])) + p.Password[1:]
 		}
-	} else if p.CapLast {
+	}
+	if p.CapLast {
 		if len(p.Password) > 0 {
 			p.Password = p.Password[:len(p.Password)-1] + strings.ToUpper(string(p.Password[len(p.Password)-1]))
 		}
@@ -83,6 +83,7 @@ func (p *pass_struct) ConvertEleet() {
 
 func (p *pass_struct) GenerateRandomPass() {
 	//totally human readable random pass
+	rand.Seed(time.Now().UTC().UnixNano())
 	tsize := int(p.Length / 2)
 	tpass := ""
 	index := 0
@@ -99,7 +100,10 @@ func (p *pass_struct) GeneratePassword() {
 	//generate password from file or random one and modify it according to args
 	p.GenerateRandomPass()
 
-	if p.CapFirst || p.CapLast {
+	if p.CapFirst {
+		p.CapitalizePass()
+	}
+	if p.CapLast {
 		p.CapitalizePass()
 	}
 	if p.Preffix {
@@ -189,9 +193,8 @@ func chooseRandomChar(s string, n int) string {
 // 		}
 // 	}
 
-	// // Check for any errors during scanning
-	// if err := scanner.Err(); err != nil {
-	// 	log.Fatalf("Failed to scan the file: %v\n", err)
-	// }
-	//return wordlist
-
+// // Check for any errors during scanning
+// if err := scanner.Err(); err != nil {
+// 	log.Fatalf("Failed to scan the file: %v\n", err)
+// }
+//return wordlist
