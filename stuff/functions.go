@@ -44,8 +44,7 @@ type pass_struct struct {
 }
 
 func (p *pass_struct) CapitalizePass() {
-	//capitalize by default first letter except lastletter = True
-	// Convert the string to lowercase
+	//capitalize password first letter, last letter or both
 
 	// Check the provided option and capitalize the corresponding letter
 	if p.CapFirst {
