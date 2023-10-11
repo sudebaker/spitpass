@@ -100,20 +100,18 @@ func (p *pass_struct) GeneratePassword() {
 	//generate password from file or random one and modify it according to args
 	p.GenerateRandomPass()
 
-	if p.CapFirst {
-		p.CapitalizePass()
-	}
-	if p.CapLast {
-		p.CapitalizePass()
-	}
+
 	if p.Preffix {
 		p.PreffixPass(p.Preffix_lenght)
 	}
-	if p.Suffix {
-		p.SuffixPass(p.Suffix_lenght)
-	}
 	if p.Eleet {
 		p.ConvertEleet()
+	}
+	if p.CapFirst || p.CapLast {
+		p.CapitalizePass()
+	}
+	if p.Suffix {
+		p.SuffixPass(p.Suffix_lenght)
 	}
 }
 
