@@ -8,9 +8,6 @@ Return human readable passwords with some posible modifications
 ### USAGE:
    - SpitPass [global options] command [command options] [arguments...]
 
-### VERSION:
-   - 0.1
-
 ### AUTHOR:
    - Jesus Cifuentes <jcifuentesfonseca@protonmail.com>
 
