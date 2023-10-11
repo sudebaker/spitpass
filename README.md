@@ -26,3 +26,14 @@ Return human readable passwords with some posible modifications
   - --lenght value, -s value  Lenght of password (default: 8)
   - --help, -h                show help
   - --version, -v             print the version
+
+
+  ### Examples
+
+  ~~~
+  spitpass -s 12 -e
+  ~~~
+
+  ~~~
+  spitpass -u -c
+  ~~~
