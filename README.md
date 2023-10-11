@@ -2,22 +2,22 @@
 Return human readable passwords with some posible modifications
 
 
-###NAME:
+### NAME:
    - SpitPass - SpitPass
 
-###USAGE:
+### USAGE:
    - SpitPass [global options] command [command options] [arguments...]
 
-###VERSION:
+### VERSION:
    - 0.1
 
-###AUTHOR:
+### AUTHOR:
    - Jesus Cifuentes <jcifuentesfonseca@protonmail.com>
 
-###COMMANDS:
+### COMMANDS:
    - help, h  Shows a list of commands or help for one command
 
-###GLOBAL OPTIONS:
+### GLOBAL OPTIONS:
   - --suffix, -u              Add some random special character at the end of password (default: false)
   - --preffix, -p             Add some random special character at the beginning of password (default: false)
   - --eleet, -e               Convert password to a semi eleet language (default: false)
