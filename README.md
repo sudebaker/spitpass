@@ -1,5 +1,5 @@
 # spitpass
-Return human readable passwords with some posible modifications
+Returns human readable passwords with some posible modifications
 
 
 ### NAME:
