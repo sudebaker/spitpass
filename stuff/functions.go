@@ -1,8 +1,11 @@
 package stuff
 
 import (
+	"bufio"
+	"fmt"
 	"math/rand"
-	//"regexp"
+	"os"
+	"regexp"
 	"strings"
 	"time"
 )
@@ -27,8 +30,9 @@ var (
 	//nonAlphanumericRegex = regexp.MustCompile(`[^\p{L}\p{N} ]+`)
 )
 
-//var nonAlphanumericRegex = regexp.MustCompile("[^a-zA-Z0-9]+")
+var nonAlphanumericRegex = regexp.MustCompile("^[a-zA-Z]+$")
 
+// struct to store password and options
 type pass_struct struct {
 	Password       string
 	File           string
@@ -83,7 +87,7 @@ func (p *pass_struct) ConvertEleet() {
 
 func (p *pass_struct) GenerateRandomPass() {
 	//totally human readable random pass
-	rand.Seed(time.Now().UTC().UnixNano())
+	//rand.Seed(time.Now().UTC().UnixNano())
 	tsize := int(p.Length / 2)
 	tpass := ""
 	index := 0
@@ -98,10 +102,14 @@ func (p *pass_struct) GenerateRandomPass() {
 
 func (p *pass_struct) GeneratePassword() {
 	//generate password from file or random one and modify it according to args
-	p.GenerateRandomPass()
+
+	if p.File != "" {
+		p.GenerateFromFile()
+	} else {
+		p.GenerateRandomPass()
+	}
 
 	//order of checking args is important
-
 	if p.Eleet {
 		p.ConvertEleet()
 	}
@@ -133,7 +141,8 @@ func NewPassword() pass_struct {
 
 func chooseRandomChar(s string, n int) string {
 
-	rand.Seed(time.Now().UnixNano())
+	randSource := rand.NewSource(time.Now().UnixNano())
+	randGenerator := rand.New(randSource)
 	// Convert the string to a slice of runes
 	chars := []rune(s)
 	// Create a new slice to store the randomly chosen characters
@@ -142,7 +151,7 @@ func chooseRandomChar(s string, n int) string {
 	// Generate n random indices in the range 0 to len(chars)-1
 	// and select the corresponding characters
 	for i := 0; i < n; i++ {
-		randomIndex := rand.Intn(len(chars))
+		randomIndex := randGenerator.Intn(len(chars))
 		randomChars[i] = chars[randomIndex]
 	}
 
@@ -150,50 +159,66 @@ func chooseRandomChar(s string, n int) string {
 	return string(randomChars)
 }
 
-// func (p *pass_struct) GenerateFromFile() {
-// 	wordlist := []string{}
-// 	// Open the file
-// 	file, err := os.Open(p.File)
-// 	if err != nil {
-// 		log.Fatalf("Failed to open the file: %v\n", err)
-// 	}
-// 	defer file.Close()
+func (p *pass_struct) GenerateFromFile() {
+	// Open the file
+	file, err := os.Open(p.File)
+	if err != nil {
+		fmt.Printf("Failed to open the file: %v", file)
+	}
+	defer file.Close()
 
-// 	// Create a scanner to read the file line by line
-// 	scanner := bufio.NewScanner(file)
+	// Create a scanner to read the file line by line
+	scanner := bufio.NewScanner(file)
 
-// 	// Iterate over each line
-// 	for scanner.Scan() {
-// 		// Split the line into words
-// 		words := strings.Fields(scanner.Text())
+	// Process the file
+	var passwordComponents []string // To store potential components
+	currentComponent := ""
+	for scanner.Scan() {
+		line := scanner.Text()
+		fields := strings.Fields(line)
+		for _, word := range fields {
+			// Check if the word can be added to the current component
+			if nonAlphanumericRegex.MatchString(word) {
+				// If the word is alphanumeric
+				if len(word) == p.Length {
+					// we got it
+					passwordComponents = append(passwordComponents, word)
+					continue
+				}
+				newComponent := currentComponent + word // Combine with the previous component
 
-// 		// Iterate over each word
-// 		for _, word := range words {
-// 			// Check if the word length is greater than x
-// 			if len(word) > p.Length {
-// 				word = strings.ToLower(word)
-// 				word = nonAlphanumericRegex.ReplaceAllString(word, "")
+				if len(newComponent) <= p.Length {
+					currentComponent = newComponent
+				} else {
+					// If component gets too long...
+					currentComponent = newComponent[:p.Length] // Trim it
+					passwordComponents = append(passwordComponents, currentComponent) // Store it
+					currentComponent = ""                                                                  // Start a new component
+				}
+			}
+		}
 
-// 				wordlist = append(wordlist, word)
-// 			}
+		// // Handle the last potential component
+		// if currentComponent != "" {
+		// 	passwordComponents = append(passwordComponents, currentComponent)
+		// }
 
-// 			if p.CapFirst || p.CapLast {
-// 				p.CapitalizePass()
-// 			}
-// 			if p.Preffix {
-// 				p.PreffixPass(p.Preffix_lenght)
-// 			}
-// 			if p.Suffix {
-// 				p.SuffixPass(p.Suffix_lenght)
-// 			}
-// 			if p.Eleet {
-// 				p.ConvertEleet()
-// 			}
-// 		}
-// 	}
+		for _, word := range passwordComponents {
+			p.Password = word
+			if p.Eleet {
+				p.ConvertEleet()
+			}
+			if p.CapFirst || p.CapLast {
+				p.CapitalizePass()
+			}
+			if p.Preffix {
+				p.PreffixPass(p.Preffix_lenght)
+			}
+			if p.Suffix {
+				p.SuffixPass(p.Suffix_lenght)
+			}
+			fmt.Println(p.Password)
+		}
 
-// // Check for any errors during scanning
-// if err := scanner.Err(); err != nil {
-// 	log.Fatalf("Failed to scan the file: %v\n", err)
-// }
-//return wordlist
+	}
+}

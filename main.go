@@ -73,12 +73,12 @@ func main() {
 				Usage:       "Capitalize the last letter of password",
 				Destination: &pass.CapLast,
 			},
-			// &cli.StringFlag{
-			// 	Name:        "text",
-			// 	Aliases:     []string{"t"},
-			// 	Usage:       "Read words from `FILE`",
-			// 	Destination: &pass.File,
-			// },
+			&cli.StringFlag{
+				Name:        "text",
+				Aliases:     []string{"t"},
+				Usage:       "Read words from `FILE`",
+				Destination: &pass.File,
+			},
 			&cli.IntFlag{
 				Name:        "lenght",
 				Aliases:     []string{"s"},
