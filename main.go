@@ -10,23 +10,10 @@ import (
 	"github.com/urfave/cli/v2"
 )
 
+// main function
 func main() {
 
-	//     wordlist := stuff.GetWords("./texto.txt",10)
-
-	//     for _,word := range(wordlist){
-	//         password:=stuff.NewPassword()
-	//         password.Password = word
-	//         fmt.Println(password.Password)
-	//     }
-	//
 	pass := stuff.NewPassword()
-	// pass.GenerateRandomPass()
-	// pass.SuffixPass(pass.Suffix_lenght)
-	// pass.CapFirst = true
-	// pass.CapitalizePass()
-	// fmt.Println(pass.Password)
-
 	app := &cli.App{
 		Name:     "SpitPass",
 		Version:  "1.0",

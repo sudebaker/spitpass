@@ -20,6 +20,7 @@ Returns human readable passwords with some posible modifications
   - --eleet, -e               Convert password to a semi eleet language (default: false)
   - --capfirst, -c            Capitalize the first letter of password (default: false)
   - --caplast, -l             Capitalize the last letter of password (default: false)
+  - --text FILE, -t FILE      Read words from FILE
   - --lenght value, -s value  Lenght of password (default: 8)
   - --help, -h                show help
   - --version, -v             print the version

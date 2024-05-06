@@ -10,6 +10,8 @@ import (
 	"time"
 )
 
+// Constants to construct the password, including consonants, vowels, special characters,
+// and a map to convert characters to leet speak
 var (
 	conso = [...]rune{
 		'b', 'c', 'd', 'f', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'r', 's', 't', 'v', 'w', 'x', 'y', 'z'}
@@ -27,7 +29,6 @@ var (
 		't': '7',
 		'z': '2',
 	}
-	//nonAlphanumericRegex = regexp.MustCompile(`[^\p{L}\p{N} ]+`)
 )
 
 var nonAlphanumericRegex = regexp.MustCompile("^[a-zA-Z]+$")
@@ -46,8 +47,8 @@ type pass_struct struct {
 	CapLast        bool
 }
 
+// capitalize password first letter, last letter or both
 func (p *pass_struct) CapitalizePass() {
-	//capitalize password first letter, last letter or both
 
 	// Check the provided option and capitalize the corresponding letter
 	if p.CapFirst {
@@ -62,18 +63,20 @@ func (p *pass_struct) CapitalizePass() {
 	}
 }
 
+// add a random preffix with lenght <lenght>
 func (p *pass_struct) PreffixPass(lenght int) {
-	//add a random preffix with lenght <lenght>
+
 	p.Password = chooseRandomChar(special_chars, lenght) + p.Password
 }
 
+// add a random suffix with lenght <lenght>
 func (p *pass_struct) SuffixPass(lenght int) {
-	//add a random suffix with lenght <lenght>
+
 	p.Password = p.Password + chooseRandomChar(special_chars, lenght)
 }
 
+// convert string password to semi eleet language
 func (p *pass_struct) ConvertEleet() {
-	//convert string password to semi eleet language
 	var ptemp string
 	for _, char := range p.Password {
 		if replacement, ok := alphabet[char]; ok {
@@ -85,9 +88,8 @@ func (p *pass_struct) ConvertEleet() {
 	p.Password = ptemp
 }
 
+// totally human readable random pass
 func (p *pass_struct) GenerateRandomPass() {
-	//totally human readable random pass
-	//rand.Seed(time.Now().UTC().UnixNano())
 	tsize := int(p.Length / 2)
 	tpass := ""
 	index := 0
@@ -100,9 +102,8 @@ func (p *pass_struct) GenerateRandomPass() {
 	p.Password = tpass
 }
 
+// generate password from file or random one and modify it according to args
 func (p *pass_struct) GeneratePassword() {
-	//generate password from file or random one and modify it according to args
-
 	if p.File != "" {
 		p.GenerateFromFile()
 	} else {
@@ -139,8 +140,8 @@ func NewPassword() pass_struct {
 	return password
 }
 
+// choose random characters from a string
 func chooseRandomChar(s string, n int) string {
-
 	randSource := rand.NewSource(time.Now().UnixNano())
 	randGenerator := rand.New(randSource)
 	// Convert the string to a slice of runes
@@ -159,6 +160,7 @@ func chooseRandomChar(s string, n int) string {
 	return string(randomChars)
 }
 
+// generate passwords from file
 func (p *pass_struct) GenerateFromFile() {
 	// Open the file
 	file, err := os.Open(p.File)
@@ -191,9 +193,9 @@ func (p *pass_struct) GenerateFromFile() {
 					currentComponent = newComponent
 				} else {
 					// If component gets too long...
-					currentComponent = newComponent[:p.Length] // Trim it
+					currentComponent = newComponent[:p.Length]                        // Trim it
 					passwordComponents = append(passwordComponents, currentComponent) // Store it
-					currentComponent = ""                                                                  // Start a new component
+					currentComponent = ""                                             // Start a new component
 				}
 			}
 		}
