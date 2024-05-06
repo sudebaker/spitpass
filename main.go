@@ -16,7 +16,7 @@ func main() {
 	pass := stuff.NewPassword()
 	app := &cli.App{
 		Name:     "SpitPass",
-		Version:  "1.0",
+		Version:  "1.1",
 		Compiled: time.Now(),
 		Authors: []*cli.Author{
 			&cli.Author{
